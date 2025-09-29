@@ -9,13 +9,23 @@ const nextConfig: NextConfig = {
     // Allow production builds to complete even with TypeScript warnings  
     ignoreBuildErrors: true,
   },
+  
+  // Production optimizations
+  poweredByHeader: false,
+  compress: true,
+  
+  // Vercel deployment configuration with turbo
   experimental: {
-    // Enable experimental features for better performance
     turbo: {
       resolveAlias: {
         canvas: './empty-module.js',
       },
     },
+  },
+  
+  // Environment handling for production
+  env: {
+    NEXTAUTH_URL_INTERNAL: process.env.NEXTAUTH_URL || 'https://pmajay-management-system.vercel.app',
   },
 };
 

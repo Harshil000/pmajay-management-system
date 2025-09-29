@@ -16,18 +16,23 @@ export const authOptions: AuthOptions = {
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
-        await dbConnect();
-        const user = await AdminUser.findOne({ email: credentials?.email });
-
-        if (user && credentials?.password && await bcrypt.compare(credentials.password, user.password)) {
-          return {
-            id: user._id.toString(),
-            name: user.name,
-            email: user.email,
-            role: user.role,
-          };
+        try {
+          await dbConnect();
+          const user = await AdminUser.findOne({ email: credentials?.email });
+          
+          if (user && await bcrypt.compare(credentials?.password || '', user.password)) {
+            return {
+              id: user._id.toString(),
+              name: user.name,
+              email: user.email,
+              role: user.role,
+            };
+          }
+          return null;
+        } catch (error) {
+          console.error('Auth error:', error);
+          return null;
         }
-        return null;
       },
     }),
   ],
@@ -35,6 +40,9 @@ export const authOptions: AuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: 'jwt' as const,
+  },
+  pages: {
+    signIn: '/login',
   },
   callbacks: {
     async jwt({ token, user }: { token: any; user: any }) {
@@ -50,9 +58,7 @@ export const authOptions: AuthOptions = {
       return session;
     },
   },
-  pages: {
-    signIn: '/login',
-  },
+  debug: process.env.NODE_ENV === 'development',
 };
 
 const handler = NextAuth(authOptions);

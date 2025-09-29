@@ -4,11 +4,30 @@ import { AdminUser } from '../../../../lib/models';
 import bcrypt from 'bcryptjs';
 
 export async function GET() {
-  return POST(); // Allow GET requests to trigger the same logic
+  return createAdminUser();
 }
 
 export async function POST() {
+  return createAdminUser();
+}
+
+async function createAdminUser() {
   try {
+    // Validate environment variables
+    if (!process.env.MONGODB_URI) {
+      return NextResponse.json({
+        success: false,
+        error: 'MONGODB_URI environment variable is missing'
+      }, { status: 500 });
+    }
+
+    if (!process.env.ADMIN_EMAIL || !process.env.ADMIN_PASSWORD) {
+      return NextResponse.json({
+        success: false,
+        error: 'ADMIN_EMAIL or ADMIN_PASSWORD environment variable is missing'
+      }, { status: 500 });
+    }
+
     await dbConnect();
     console.log('Connected to MongoDB for admin seeding');
 
@@ -19,12 +38,17 @@ export async function POST() {
       return NextResponse.json({
         success: true,
         message: 'Admin user already exists',
-        data: { email: existingAdmin.email, role: existingAdmin.role }
+        data: { 
+          email: existingAdmin.email, 
+          role: existingAdmin.role,
+          environment: process.env.NODE_ENV,
+          timestamp: new Date().toISOString()
+        }
       });
     }
 
     // Create Super Admin user
-    const hashedPassword = await bcrypt.hash(process.env.ADMIN_PASSWORD || 'Admin@2024', 12);
+    const hashedPassword = await bcrypt.hash(process.env.ADMIN_PASSWORD, 12);
     
     const adminUser = await AdminUser.create({
       name: 'Super Administrator',
