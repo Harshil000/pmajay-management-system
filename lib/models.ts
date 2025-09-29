@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
+import { RESEARCH_CONSTANTS } from './research-constants';
 
-// State Schema
+// State Schema - Following constitutional state structure
 const StateSchema = new mongoose.Schema({
   name: { type: String, required: true },
   code: { type: String, required: true, unique: true },
@@ -15,7 +16,7 @@ const StateSchema = new mongoose.Schema({
   updatedAt: { type: Date, default: Date.now }
 });
 
-// Agency Schema - Enhanced for PM-AJAY coordination
+// Research-based Agency Schema - Following NHA operational structure and NITI Aayog framework
 const AgencySchema = new mongoose.Schema({
   name: { type: String, required: true },
   code: { type: String, required: true, unique: true },

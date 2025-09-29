@@ -3,6 +3,10 @@ import dbConnect from '../../../lib/db';
 import { State, Agency, Project, FundFlow, AdminUser } from '../../../lib/models';
 import bcrypt from 'bcryptjs';
 
+export async function GET() {
+  return POST(); // Allow GET requests to trigger the same seeding logic
+}
+
 export async function POST() {
   try {
     await dbConnect();

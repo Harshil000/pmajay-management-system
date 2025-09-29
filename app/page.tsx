@@ -12,10 +12,14 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32">
           <div className="text-center">
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
-              PM-AJAY Dashboard
+              PM-AJAY Digital Management System
             </h1>
-            <p className="text-lg sm:text-xl text-blue-100 max-w-3xl mx-auto mb-8">
-              Streamlined governance through intelligent monitoring and management.
+            <p className="text-lg sm:text-xl text-blue-100 max-w-3xl mx-auto mb-4">
+              Research-driven governance through intelligent monitoring and coordination.
+            </p>
+            <p className="text-sm text-blue-200 max-w-2xl mx-auto mb-8">
+              Solving NHA-identified coordination gaps • Addressing CAG transparency issues • 
+              Following NITI Aayog digital governance framework
             </p>
             {session ? (
               <Link 

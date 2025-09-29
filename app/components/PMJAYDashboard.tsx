@@ -248,7 +248,8 @@ const PMJAYDashboard = () => {
           <div className="flex justify-between items-center h-16">
             <div>
               <h1 className="text-2xl font-bold text-white">PM-AJAY Digital Dashboard</h1>
-              <p className="text-sm text-gray-300">Coordinated Implementation & Real-time Monitoring</p>
+              <p className="text-sm text-gray-300">Research-Driven Coordination & Real-time Monitoring</p>
+              <p className="text-xs text-blue-300">Based on NHA Reports & NITI Aayog Framework</p>
             </div>
             <div className="flex items-center gap-3">
               <Button 
