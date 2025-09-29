@@ -56,13 +56,7 @@ async function createAdminUser() {
       password: hashedPassword,
       role: 'Super Admin',
       isActive: true,
-      permissions: {
-        read: true,
-        write: true,
-        delete: true,
-        approve_funds: true,
-        manage_users: true
-      }
+      permissions: ['read', 'write', 'delete', 'approve_funds', 'manage_users']
     });
 
     console.log('Super Admin user created successfully');
