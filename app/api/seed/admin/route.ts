@@ -3,6 +3,10 @@ import dbConnect from '../../../../lib/db';
 import { AdminUser } from '../../../../lib/models';
 import bcrypt from 'bcryptjs';
 
+export async function GET() {
+  return POST(); // Allow GET requests to trigger the same logic
+}
+
 export async function POST() {
   try {
     await dbConnect();
