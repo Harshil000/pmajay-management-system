@@ -1,36 +1,135 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# PM-AJAY Management System
+
+A comprehensive management system for PM-AJAY (Prime Minister's Ayushman Bharat Jana Arogya Yojana) built with Next.js 15, React 19, TypeScript, and MongoDB.
+
+## Features
+
+- **Admin Panel**: Complete CRUD operations for states, agencies, projects, and fund flows
+- **Dark Theme**: Modern, luxury dark interface with glassmorphism effects
+- **Real-time Dashboard**: Live data monitoring with component-wise statistics
+- **State Management**: Indian states dropdown with manual entry option
+- **Agency Management**: Dropdown selections for implementing, executing, nodal, and monitoring agencies
+- **Project Tracking**: Project progress monitoring with agency relationships
+- **Fund Flow Management**: Track fund allocation and disbursement
+- **Authentication**: Secure login with NextAuth.js
+- **Responsive Design**: Mobile-friendly responsive layout
+
+## Tech Stack
+
+- **Frontend**: Next.js 15.5.4, React 19.1.0, TypeScript 5
+- **Styling**: Tailwind CSS 4 with custom dark theme
+- **Database**: MongoDB with Mongoose 8.18.2
+- **Authentication**: NextAuth.js 4.24.11
+- **UI Components**: Custom components with Heroicons
+- **Development**: ESLint, Turbopack for fast builds
+
+## Environment Variables
+
+Create a `.env.local` file in the root directory:
+
+```env
+# Database
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/pmajay?retryWrites=true&w=majority
+
+# NextAuth
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=your-secret-key-here
+
+# Admin Credentials
+ADMIN_EMAIL=admin@pmajay.gov.in
+ADMIN_PASSWORD=your-secure-password
+
+# Environment
+NODE_ENV=development
+```
 
 ## Getting Started
 
-First, run the development server:
+1. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+2. **Set up environment variables**
+   - Copy `.env.example` to `.env.local`
+   - Update with your actual credentials
+
+3. **Run development server**
+   ```bash
+   npm run dev
+   ```
+
+4. **Access the application**
+   - Main app: http://localhost:3000
+   - Admin panel: http://localhost:3000/admin
+   - Dashboard: http://localhost:3000/dashboard
+
+## Deployment to Vercel
+
+### Quick Deploy
+1. Push to GitHub
+2. Import to Vercel
+3. Set environment variables
+4. Deploy automatically
+
+### Environment Variables for Production
+```
+MONGODB_URI=<mongodb-atlas-connection>
+NEXTAUTH_URL=<your-vercel-domain>
+NEXTAUTH_SECRET=<random-secret>
+ADMIN_EMAIL=admin@pmajay.gov.in
+ADMIN_PASSWORD=<secure-password>
+NODE_ENV=production
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Post-deployment Setup
+```bash
+# Seed states data
+curl https://your-app.vercel.app/api/states/seed
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+# Create admin user  
+curl https://your-app.vercel.app/api/seed/admin
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Project Structure
 
-## Learn More
+```
+app/
+├── admin/                 # Admin panel pages
+├── api/                   # API routes
+├── components/            # React components
+├── dashboard/             # Dashboard page
+└── globals.css           # Global styles
 
-To learn more about Next.js, take a look at the following resources:
+lib/
+├── models.ts             # MongoDB schemas
+├── db.ts                 # Database connection
+└── dataUtils.ts          # Data utilities
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Key Features
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Real-time Dashboard**: Live data with auto-refresh
+- **CRUD Operations**: Full management for all entities
+- **Indian States Integration**: Complete states data with validation
+- **Agency Relationships**: Proper linking between agencies and projects
+- **Fund Flow Tracking**: Monitor allocation and disbursement
+- **Dark Theme UI**: Professional admin interface
 
-## Deploy on Vercel
+## Build Status
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+✅ Production build successful
+✅ All routes optimized  
+✅ TypeScript validation configured
+✅ ESLint warnings resolved
+✅ Vercel deployment ready
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## API Endpoints
+
+- `/api/states` - State management
+- `/api/agencies` - Agency operations
+- `/api/projects` - Project tracking
+- `/api/funds` - Fund flow management
+- `/api/admin/login` - Authentication
+
+Built for Smart India Hackathon (SIH) 2024
