@@ -9,7 +9,7 @@ export async function POST() {
     console.log('Connected to MongoDB for admin seeding');
 
     // Check if admin user already exists
-    const existingAdmin = await AdminUser.findOne({ email: 'admin@pmajay.gov.in' });
+    const existingAdmin = await AdminUser.findOne({ email: process.env.ADMIN_EMAIL });
     
     if (existingAdmin) {
       return NextResponse.json({
@@ -20,11 +20,11 @@ export async function POST() {
     }
 
     // Create Super Admin user
-    const hashedPassword = await bcrypt.hash('admin123', 12);
+    const hashedPassword = await bcrypt.hash(process.env.ADMIN_PASSWORD || 'Admin@2024', 12);
     
     const adminUser = await AdminUser.create({
       name: 'Super Administrator',
-      email: 'admin@pmajay.gov.in',
+      email: process.env.ADMIN_EMAIL || 'admin@pmajay.gov.in',
       password: hashedPassword,
       role: 'Super Admin',
       isActive: true,
