@@ -17,11 +17,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className="bg-gray-900 text-gray-100 antialiased">
+    <html lang="en" className="h-full">
+      <body className="bg-gray-900 text-gray-100 antialiased h-full">
         <SessionProviderWrapper>
           <Navbar />
-          <main className="min-h-screen">
+          <main>
             {children}
           </main>
         </SessionProviderWrapper>
