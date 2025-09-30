@@ -110,7 +110,7 @@ export default function LoginPage() {
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-400">
               Demo Admin Credentials: <br />
-              <code className="text-xs bg-gray-700 text-green-400 px-2 py-1 rounded mt-2 inline-block">admin@pmajay.gov.in / admin123</code>
+              <code className="text-xs bg-gray-700 text-green-400 px-2 py-1 rounded mt-2 inline-block">admin@pmajay.gov.in / Admin@2024</code>
             </p>
           </div>
         </div>
