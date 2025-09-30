@@ -20,13 +20,10 @@
 
 * {
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
 }
 
 html {
   scroll-behavior: smooth;
-  height: 100%;
 }
 
 body {
@@ -36,8 +33,6 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  height: 100%;
-  overflow-x: hidden;
 }
 
 /* Custom scrollbar - Dark theme */
