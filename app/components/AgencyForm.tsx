@@ -2,17 +2,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { Agency } from '@/types';
 
 interface State {
   _id: string;
   name: string;
-}
-
-interface Agency {
-  _id?: string;
-  name: string;
-  type: 'Implementing' | 'Executing';
-  state: string; // Only ID for form submission
 }
 
 export default function AgencyForm({
@@ -20,7 +14,7 @@ export default function AgencyForm({
   initialData,
 }: { onSave: () => void; initialData?: Agency | null }) {
   const [name, setName] = useState(initialData?.name || '');
-  const [type, setType] = useState<'Implementing' | 'Executing'>(initialData?.type || 'Implementing');
+  const [type, setType] = useState<'Implementing Agency' | 'Executing Agency' | 'Nodal Agency' | 'Monitoring Agency'>(initialData?.type || 'Implementing Agency');
   const [stateId, setStateId] = useState(initialData?.state || '');
   const [states, setStates] = useState<State[]>([]);
   const [loading, setLoading] = useState(false);
@@ -61,10 +55,10 @@ export default function AgencyForm({
     if (initialData) {
       setName(initialData.name);
       setType(initialData.type);
-      setStateId(initialData.state);
+      setStateId(initialData.state || '');
     } else {
       setName('');
-      setType('Implementing');
+      setType('Implementing Agency');
       setStateId(states.length > 0 ? states[0]._id : '');
     }
   }, [initialData, states]);
@@ -92,7 +86,7 @@ export default function AgencyForm({
       }
 
       setName('');
-      setType('Implementing');
+      setType('Implementing Agency');
       setStateId(states.length > 0 ? states[0]._id : '');
       onSave();
     } catch (err: any) {
@@ -130,12 +124,14 @@ export default function AgencyForm({
           <select
             id="type"
             value={type}
-            onChange={(e) => setType(e.target.value as 'Implementing' | 'Executing')}
+            onChange={(e) => setType(e.target.value as 'Implementing Agency' | 'Executing Agency' | 'Nodal Agency' | 'Monitoring Agency')}
             required
             className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
           >
-            <option value="Implementing">Implementing</option>
-            <option value="Executing">Executing</option>
+            <option value="Implementing Agency">Implementing Agency</option>
+            <option value="Executing Agency">Executing Agency</option>
+            <option value="Nodal Agency">Nodal Agency</option>
+            <option value="Monitoring Agency">Monitoring Agency</option>
           </select>
         </div>
 

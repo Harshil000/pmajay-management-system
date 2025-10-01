@@ -4,7 +4,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import AdminPanel from '../components/AdminPanel';
+import AdminPanel from '../components/EnhancedAdminPanel';
 import { LockClosedIcon } from '@heroicons/react/24/outline';
 
 const AdminPage: React.FC = () => {

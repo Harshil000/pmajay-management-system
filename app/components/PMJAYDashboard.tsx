@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import AdminPrivileges from './AdminPrivileges';
+import WorkflowDashboard from './WorkflowDashboard';
+import NotificationCenter from './NotificationCenter';
 import { 
   ChatBubbleLeftRightIcon,
   UsersIcon,
@@ -470,15 +472,29 @@ const PMJAYDashboard = () => {
               </Button>
               
               <Button 
-                onClick={() => router.push('/funds')}
+                onClick={() => router.push('/communications')}
                 variant="outline" 
                 className="h-20 flex flex-col items-center justify-center border-gray-600 text-gray-300 hover:bg-gray-700"
               >
-                <BanknotesIcon className="w-6 h-6 mb-2" />
-                <span className="text-sm">Fund Flow</span>
+                <ChatBubbleLeftRightIcon className="w-6 h-6 mb-2" />
+                <span className="text-sm">Communications</span>
               </Button>
             </div>
           </Card>
+        </div>
+
+        {/* Workflow Management Section */}
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold text-white mb-6 flex items-center">
+            <ArrowPathIcon className="w-6 h-6 mr-2" />
+            Automated Workflow Management
+          </h2>
+          <WorkflowDashboard />
+        </div>
+
+        {/* Notification Center */}
+        <div className="mb-8">
+          <NotificationCenter agencyId="60f3e9a9b8e6d4c0a8b4f8e7" />
         </div>
       </div>
     </div>

@@ -3,17 +3,11 @@
 import { useState } from 'react';
 import AgencyList from '../../../app/components/AgencyList';
 import AgencyForm from '../../../app/components/AgencyForm';
+import { Agency } from '@/types';
 
 interface State {
   _id: string;
   name: string;
-}
-
-interface Agency {
-  _id?: string;
-  name: string;
-  type: 'Implementing' | 'Executing';
-  state: string; // Only ID for form submission
 }
 
 export default function AdminAgenciesPage() {

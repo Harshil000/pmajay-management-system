@@ -19,7 +19,7 @@ export interface Agency {
   _id: string;
   name: string;
   code?: string;
-  type: 'Implementing Agency' | 'Executing Agency' | 'Nodal Agency' | 'Monitoring Agency' | 'Implementing' | 'Executing';
+  type: 'Implementing Agency' | 'Executing Agency' | 'Nodal Agency' | 'Monitoring Agency';
   level?: 'Central' | 'State' | 'District' | 'Block' | 'Local';
   state?: string;
   stateCode?: string;
@@ -109,7 +109,7 @@ export interface FundFlow {
   updatedAt: Date;
 }
 
-export interface Communication {
+export interface CommunicationType {
   _id: string;
   subject: string;
   message: string;

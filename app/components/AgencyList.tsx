@@ -2,21 +2,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { Agency } from '@/types';
 
 interface State {
   _id: string;
   name: string;
-}
-
-interface Agency {
-  _id: string;
-  name: string;
-  type: string;
-  state: string;
-  level?: string;
-  code?: string;
-  contactEmail?: string;
-  contactPhone?: string;
 }
 
 export default function AgencyList({

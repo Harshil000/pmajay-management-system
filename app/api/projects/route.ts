@@ -1,7 +1,8 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '../../../lib/db';
-import { Project } from '../../../lib/models';
+import { Project, Agency, Workflow } from '../../../lib/models';
+import { ServerWorkflowEngine } from '../../../lib/server-workflow-engine';
 
 export async function GET() {
   try {
@@ -60,10 +61,26 @@ export async function POST(request: NextRequest) {
     const project = new Project(projectData);
     await project.save();
     
+    // 🚀 Initialize Automated Workflow using Enhanced Server Engine
+    try {
+      console.log('🔄 Initializing automated workflow for project:', project._id);
+      
+      await ServerWorkflowEngine.initializeProjectWorkflow(
+        project._id.toString(), 
+        project.implementingAgency.toString()
+      );
+      
+      console.log('✅ Automated workflow initialized successfully');
+      
+    } catch (workflowError) {
+      console.error('❌ Error initializing workflow:', workflowError);
+      // Don't fail project creation if workflow fails
+    }
+    
     return NextResponse.json({
       success: true,
       data: project,
-      message: 'Project created successfully'
+      message: 'Project created successfully with automated workflow initialized'
     }, { status: 201 });
   } catch (error: any) {
     console.error('Projects POST API Error:', error);

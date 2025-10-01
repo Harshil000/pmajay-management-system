@@ -283,7 +283,7 @@ const CommunicationSchema = new mongoose.Schema({
   },
   priority: {
     type: String,
-    enum: ['Low', 'Medium', 'High', 'Urgent'],
+    enum: ['Low', 'Medium', 'High', 'Critical'],
     default: 'Medium'
   },
   
@@ -294,15 +294,30 @@ const CommunicationSchema = new mongoose.Schema({
   // Status and Response
   status: {
     type: String,
-    enum: ['Sent', 'Delivered', 'Read', 'Responded', 'Closed'],
+    enum: ['Sent', 'Delivered', 'Read', 'In Progress', 'Resolved', 'Closed'],
     default: 'Sent'
   },
   responseRequired: { type: Boolean, default: false },
   responseDeadline: { type: Date },
   
-  // Attachments and Thread Management
+  // Thread Management - Proper way to handle replies
+  threadId: { type: mongoose.Schema.Types.ObjectId, ref: 'Communication' }, // Root message of the thread
+  parentMessageId: { type: mongoose.Schema.Types.ObjectId, ref: 'Communication' }, // Direct parent for nested replies
+  isReply: { type: Boolean, default: false },
+  replyCount: { type: Number, default: 0 },
+  
+  // Tracking
+  readBy: [{
+    agency: { type: mongoose.Schema.Types.ObjectId, ref: 'Agency' },
+    readAt: { type: Date, default: Date.now }
+  }],
+  
+  // Attachments
   attachments: [{ type: String }],
-  parentMessage: { type: mongoose.Schema.Types.ObjectId, ref: 'Communication' },
+  
+  // Escalation
+  escalationLevel: { type: Number, default: 0 },
+  escalatedAt: { type: Date },
   
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
@@ -378,4 +393,46 @@ export const Project = mongoose.models.Project || mongoose.model('Project', Proj
 export const FundFlow = mongoose.models.FundFlow || mongoose.model('FundFlow', FundFlowSchema);
 export const Communication = mongoose.models.Communication || mongoose.model('Communication', CommunicationSchema);
 export const CoordinationMatrix = mongoose.models.CoordinationMatrix || mongoose.model('CoordinationMatrix', CoordinationMatrixSchema);
+
+// Workflow Schema for automated coordination
+const WorkflowEventSchema = new mongoose.Schema({
+  stage: { type: String, required: true },
+  actor: { type: String, required: true }, // Agency ID
+  action: { type: String, required: true },
+  timestamp: { type: Date, default: Date.now },
+  notes: { type: String },
+  metadata: { type: mongoose.Schema.Types.Mixed }
+});
+
+const WorkflowSchema = new mongoose.Schema({
+  projectId: { type: mongoose.Schema.Types.ObjectId, ref: 'Project', required: true, unique: true },
+  currentStage: { 
+    type: String, 
+    required: true,
+    enum: ['created', 'notified_nodal', 'under_review', 'approved', 'assigned_executing', 'in_execution', 'monitoring', 'completed', 'rejected']
+  },
+  implementingAgency: { type: mongoose.Schema.Types.ObjectId, ref: 'Agency', required: true },
+  nodalAgency: { type: mongoose.Schema.Types.ObjectId, ref: 'Agency' },
+  executingAgencies: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Agency' }],
+  monitoringAgency: { type: mongoose.Schema.Types.ObjectId, ref: 'Agency' },
+  history: [WorkflowEventSchema],
+  isActive: { type: Boolean, default: true },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
+});
+
+// Indexes for better performance (projectId already has unique index from schema definition)
+WorkflowSchema.index({ currentStage: 1 });
+WorkflowSchema.index({ implementingAgency: 1 });
+WorkflowSchema.index({ nodalAgency: 1 });
+WorkflowSchema.index({ executingAgencies: 1 });
+WorkflowSchema.index({ monitoringAgency: 1 });
+
+// Middleware to update updatedAt on save
+WorkflowSchema.pre('save', function(next) {
+  this.updatedAt = new Date();
+  next();
+});
+
+export const Workflow = mongoose.models.Workflow || mongoose.model('Workflow', WorkflowSchema);
 export const AdminUser = mongoose.models.AdminUser || mongoose.model('AdminUser', AdminUserSchema);

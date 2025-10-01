@@ -4,6 +4,7 @@
 import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
 import { useState } from 'react';
+import NotificationCenter from './NotificationCenter';
 
 export default function Navbar() {
   const { data: session } = useSession();
@@ -53,8 +54,18 @@ export default function Navbar() {
             >
               Funds
             </Link>
+            <Link 
+              href="/workflow" 
+              className="text-sm font-medium text-gray-300 hover:text-white transition-colors duration-200 bg-blue-600/20 px-3 py-1 rounded-lg"
+            >
+              🔄 Workflow
+            </Link>
             
             <div className="flex items-center space-x-4 ml-8 pl-8 border-l border-gray-600">
+              {session && (
+                <NotificationCenter agencyId="60f3e9a9b8e6d4c0a8b4f8e7" />
+              )}
+              
               {session ? (
                 <button
                   onClick={() => signOut({ callbackUrl: '/login' })}
@@ -128,6 +139,13 @@ export default function Navbar() {
                 onClick={() => setIsOpen(false)}
               >
                 Funds
+              </Link>
+              <Link 
+                href="/workflow" 
+                className="text-sm font-medium text-gray-300 hover:text-white transition-colors duration-200"
+                onClick={() => setIsOpen(false)}
+              >
+                🔄 Workflow
               </Link>
               
               <div className="pt-4 border-t border-gray-700">

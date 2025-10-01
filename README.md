@@ -1,131 +1,258 @@
-# PM-AJAY Management System
+# PM-JAY Management System# PM-AJAY Management System
 
-A comprehensive, research-driven management system for PM-AJAY (Prime Minister's Ayushman Bharat Jana Arogya Yojana) built with Next.js 15, React 19, TypeScript, and MongoDB.
 
-## Research Foundation
 
-This system is developed based on extensive research and analysis of:
-- **National Health Authority (NHA) Annual Reports** - Identifying coordination gaps
-- **NITI Aayog Digital Governance Framework** - Best practices implementation
-- **CAG Audit Reports** - Addressing transparency issues
+A comprehensive management system for PM-JAY (Pradhan Mantri Jana Arogya Yojana) scheme coordination across Central, State, and Local agencies.A comprehensive, research-driven management system for PM-AJAY (Prime Minister's Ayushman Bharat Jana Arogya Yojana) built with Next.js 15, React 19, TypeScript, and MongoDB.
+
+
+
+## Features## Research Foundation
+
+
+
+### 🏥 Agency ManagementThis system is developed based on extensive research and analysis of:
+
+- Multi-level agency hierarchy (Central, State, Local)- **National Health Authority (NHA) Annual Reports** - Identifying coordination gaps
+
+- Real-time coordination between agencies- **NITI Aayog Digital Governance Framework** - Best practices implementation
+
+- Automated workflow management- **CAG Audit Reports** - Addressing transparency issues
+
 - **Academic Research** - Evidence-based solution design
 
-> *See [RESEARCH_FOUNDATION.md](./RESEARCH_FOUNDATION.md) for detailed research analysis*
+### 💬 Communication System
 
-## Problem Statement (Research-Validated)
+- Advanced message threading and categorization> *See [RESEARCH_FOUNDATION.md](./RESEARCH_FOUNDATION.md) for detailed research analysis*
 
-Current PM-JAY implementation faces:
+- Priority-based message handling (Critical, High, Medium, Low)
+
+- Real-time read receipts and status tracking## Problem Statement (Research-Validated)
+
+- Resolved message isolation system
+
+- Visual differentiation for message typesCurrent PM-JAY implementation faces:
+
 - **40% delays** due to poor inter-agency coordination (NHA Report 2024)
-- **Manual fund tracking** causing 2-3 week disbursement delays
-- **Communication gaps** between implementing and executing agencies
-- **Lack of real-time monitoring** across project components
+
+### 💰 Fund Management- **Manual fund tracking** causing 2-3 week disbursement delays
+
+- Fund allocation and disbursement tracking- **Communication gaps** between implementing and executing agencies
+
+- Budget monitoring and approval workflows- **Lack of real-time monitoring** across project components
+
+- Multi-tier fund request processing
 
 ## Features (Research-Driven Solutions)
 
-- **Multi-Agency Coordination Panel**: Addresses NITI Aayog's coordination framework recommendations
-- **Real-Time Fund Flow Tracking**: Solves CAG-identified transparency issues  
-- **Component-Based Project Management**: Aligned with PM-JAY's Adarsh Gram, GIA, Hostel structure
+### 📊 Project Management
+
+- Comprehensive project lifecycle management- **Multi-Agency Coordination Panel**: Addresses NITI Aayog's coordination framework recommendations
+
+- Progress tracking and milestone monitoring- **Real-Time Fund Flow Tracking**: Solves CAG-identified transparency issues  
+
+- Inter-agency project coordination- **Component-Based Project Management**: Aligned with PM-JAY's Adarsh Gram, GIA, Hostel structure
+
 - **Digital Communication Center**: Eliminates inter-agency communication bottlenecks
-- **Live Monitoring Dashboard**: Implements government real-time monitoring standards
-- **Role-Based Access Control**: Follows Digital India security guidelines
-- **State-wise Implementation Tracking**: Based on NHA operational structure
-- **Responsive Design**: Mobile-friendly interface for field officers
 
-## Tech Stack
+### 🔄 Workflow Engine- **Live Monitoring Dashboard**: Implements government real-time monitoring standards
 
-- **Frontend**: Next.js 15.5.4, React 19.1.0, TypeScript 5
-- **Styling**: Tailwind CSS 4 with custom dark theme
+- Automated approval workflows- **Role-Based Access Control**: Follows Digital India security guidelines
+
+- Dynamic task assignment- **State-wise Implementation Tracking**: Based on NHA operational structure
+
+- Progress tracking and escalation- **Responsive Design**: Mobile-friendly interface for field officers
+
+
+
+### 📈 Dashboard & Analytics## Tech Stack
+
+- Real-time system metrics
+
+- Performance monitoring- **Frontend**: Next.js 15.5.4, React 19.1.0, TypeScript 5
+
+- Compliance tracking- **Styling**: Tailwind CSS 4 with custom dark theme
+
 - **Database**: MongoDB with Mongoose 8.18.2
-- **Authentication**: NextAuth.js 4.24.11
+
+## Tech Stack- **Authentication**: NextAuth.js 4.24.11
+
 - **UI Components**: Custom components with Heroicons
-- **Development**: ESLint, Turbopack for fast builds
 
-## Environment Variables
+- **Frontend**: Next.js 15.5.4 with TypeScript- **Development**: ESLint, Turbopack for fast builds
 
-Create a `.env.local` file in the root directory:
+- **Backend**: Next.js API Routes
+
+- **Database**: MongoDB Atlas## Environment Variables
+
+- **Authentication**: NextAuth.js
+
+- **Styling**: Tailwind CSSCreate a `.env.local` file in the root directory:
+
+- **UI Components**: Heroicons
 
 ```env
-# Database
+
+## Getting Started# Database
+
 MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/pmajay?retryWrites=true&w=majority
 
-# NextAuth
-NEXTAUTH_URL=http://localhost:3000
-NEXTAUTH_SECRET=your-secret-key-here
+### Prerequisites
 
-# Admin Credentials
+- Node.js 18+ # NextAuth
+
+- MongoDB Atlas accountNEXTAUTH_URL=http://localhost:3000
+
+- Environment variables setupNEXTAUTH_SECRET=your-secret-key-here
+
+
+
+### Installation# Admin Credentials
+
 ADMIN_EMAIL=admin@pmajay.gov.in
-ADMIN_PASSWORD=your-secure-password
 
-# Environment
-NODE_ENV=development
-```
+1. Clone the repository:ADMIN_PASSWORD=your-secure-password
 
-## Getting Started
+```bash
 
-1. **Install dependencies**
-   ```bash
+git clone https://github.com/Harshil000/pmajay-management-system.git# Environment
+
+cd pmajay-management-systemNODE_ENV=development
+
+``````
+
+
+
+2. Install dependencies:## Getting Started
+
+```bash
+
+npm install1. **Install dependencies**
+
+```   ```bash
+
    npm install
-   ```
 
-2. **Set up environment variables**
-   - Copy `.env.example` to `.env.local`
-   - Update with your actual credentials
+3. Set up environment variables:   ```
 
-3. **Run development server**
+Create `.env.local` with:
+
+```env2. **Set up environment variables**
+
+MONGODB_URI=your_mongodb_connection_string   - Copy `.env.example` to `.env.local`
+
+NEXTAUTH_SECRET=your_nextauth_secret   - Update with your actual credentials
+
+NEXTAUTH_URL=http://localhost:3000
+
+```3. **Run development server**
+
    ```bash
-   npm run dev
-   ```
 
-4. **Access the application**
+4. Run the development server:   npm run dev
+
+```bash   ```
+
+npm run dev
+
+```4. **Access the application**
+
    - Main app: http://localhost:3000
-   - Admin panel: http://localhost:3000/admin
+
+5. Open [http://localhost:3000](http://localhost:3000) in your browser.   - Admin panel: http://localhost:3000/admin
+
    - Dashboard: http://localhost:3000/dashboard
+
+## Production Deployment
 
 ## Deployment to Vercel
 
+The application is optimized for deployment on Vercel:
+
 ### Quick Deploy
-1. Push to GitHub
-2. Import to Vercel
-3. Set environment variables
+
+```bash1. Push to GitHub
+
+npm run build2. Import to Vercel
+
+```3. Set environment variables
+
 4. Deploy automatically
 
+## API Documentation
+
 ### Environment Variables for Production
-```
+
+### Core Endpoints```
+
 MONGODB_URI=<mongodb-atlas-connection>
-NEXTAUTH_URL=<your-vercel-domain>
-NEXTAUTH_SECRET=<random-secret>
-ADMIN_EMAIL=admin@pmajay.gov.in
-ADMIN_PASSWORD=<secure-password>
-NODE_ENV=production
-```
 
-### Post-deployment Setup
+- `/api/agencies` - Agency managementNEXTAUTH_URL=<your-vercel-domain>
+
+- `/api/communications` - Message systemNEXTAUTH_SECRET=<random-secret>
+
+- `/api/funds` - Fund managementADMIN_EMAIL=admin@pmajay.gov.in
+
+- `/api/projects` - Project operationsADMIN_PASSWORD=<secure-password>
+
+- `/api/workflow` - Workflow engineNODE_ENV=production
+
+- `/api/coordination` - Inter-agency coordination```
+
+
+
+## Project Structure### Post-deployment Setup
+
 ```bash
-# Seed states data
-curl https://your-app.vercel.app/api/states/seed
 
-# Create admin user  
-curl https://your-app.vercel.app/api/seed/admin
+```# Seed states data
+
+├── app/                    # Next.js app directorycurl https://your-app.vercel.app/api/states/seed
+
+│   ├── components/         # React components
+
+│   ├── api/               # API routes# Create admin user  
+
+│   └── [pages]/           # Application pagescurl https://your-app.vercel.app/api/seed/admin
+
+├── lib/                   # Utility functions and configurations```
+
+├── types/                 # TypeScript type definitions
+
+└── public/                # Static assets## Project Structure
+
 ```
 
-## Project Structure
-
 ```
-app/
+
+## Contributingapp/
+
 ├── admin/                 # Admin panel pages
-├── api/                   # API routes
-├── components/            # React components
-├── dashboard/             # Dashboard page
-└── globals.css           # Global styles
+
+1. Fork the repository├── api/                   # API routes
+
+2. Create a feature branch├── components/            # React components
+
+3. Make your changes├── dashboard/             # Dashboard page
+
+4. Test thoroughly└── globals.css           # Global styles
+
+5. Submit a pull request
 
 lib/
-├── models.ts             # MongoDB schemas
+
+## License├── models.ts             # MongoDB schemas
+
 ├── db.ts                 # Database connection
-└── dataUtils.ts          # Data utilities
+
+This project is licensed under the MIT License.└── dataUtils.ts          # Data utilities
+
 ```
+
+## Support
 
 ## Key Features
 
+For support and questions, please open an issue in the GitHub repository.
 - **Real-time Dashboard**: Live data with auto-refresh
 - **CRUD Operations**: Full management for all entities
 - **Indian States Integration**: Complete states data with validation
