@@ -15,11 +15,9 @@ const nextConfig: NextConfig = {
   compress: true,
   
   // Vercel deployment configuration with turbo
-  experimental: {
-    turbo: {
-      resolveAlias: {
-        canvas: './empty-module.js',
-      },
+  turbopack: {
+    resolveAlias: {
+      canvas: './empty-module.js',
     },
   },
   
