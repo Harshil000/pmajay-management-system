@@ -1,7 +1,7 @@
 // API Routes for Workflow Management
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
-import { Workflow } from '@/lib/workflow-model';
+import { Workflow } from '@/lib/models';
 import { ServerWorkflowEngine } from '@/lib/server-workflow-engine';
 
 export async function GET(request: NextRequest) {

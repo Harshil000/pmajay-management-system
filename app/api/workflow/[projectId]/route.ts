@@ -1,7 +1,7 @@
 // API Route for specific project workflow
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
-import { Workflow } from '@/lib/workflow-model';
+import { Workflow } from '@/lib/models';
 
 export async function GET(
   request: NextRequest,

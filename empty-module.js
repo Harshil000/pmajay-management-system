@@ -1,3 +1,3 @@
-// Empty module for canvas polyfill// Empty module for turbo resolve alias
-
-module.exports = {};export default {};
+// Empty module for canvas polyfill in turbopack
+module.exports = {};
+export default {};

@@ -1,4 +1,5 @@
 
+// Global type declarations for Next.js and MongoDB
 import { MongoClient } from 'mongodb';
 
 declare global {
@@ -8,3 +9,5 @@ declare global {
     promise: any;
   };
 }
+
+export {};
