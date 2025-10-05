@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '../components/ui/Button';
 import { Card } from '../components/ui/Card';
+import { INDIAN_STATES_DATA } from '../../lib/indianStatesData';
 import { 
   PlusIcon, 
   PencilIcon, 
@@ -13,7 +14,9 @@ import {
   BriefcaseIcon,
   BanknotesIcon,
   ExclamationCircleIcon,
-  CheckCircleIcon
+  CheckCircleIcon,
+  CloudArrowDownIcon,
+  MapIcon
 } from '@heroicons/react/24/outline';
 
 interface AdminPanelProps {
@@ -698,15 +701,103 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ isAuthenticated, onLogout }) =>
     return isNaN(date.getTime()) ? 'Invalid Date' : date.toLocaleDateString('en-IN');
   };
 
+  const handleAutoPopulateStates = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch('/api/states/seed', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      const result = await response.json();
+      if (result.success) {
+        fetchData(); // Refresh the states data
+        setError('States auto-populated successfully!');
+        setTimeout(() => setError(''), 3000);
+      } else {
+        setError(result.error || 'Failed to auto-populate states');
+      }
+    } catch (error) {
+      console.error('Error auto-populating states:', error);
+      setError('Failed to auto-populate states');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const renderStates = () => (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <h3 className="text-lg font-semibold text-white">States Management</h3>
-        <Button size="sm" className="bg-blue-600 hover:bg-blue-700" onClick={handleAdd}>
-          <PlusIcon className="w-4 h-4 mr-2" />
-          Add State
-        </Button>
+        <div className="flex gap-2">
+          <Button 
+            size="sm" 
+            variant="outline"
+            className="bg-green-600 hover:bg-green-700 text-white border-green-600"
+            onClick={handleAutoPopulateStates}
+            disabled={loading}
+          >
+            <CloudArrowDownIcon className="w-4 h-4 mr-2" />
+            {loading ? 'Auto-populating...' : 'Auto-populate All States'}
+          </Button>
+          <Button size="sm" className="bg-blue-600 hover:bg-blue-700" onClick={handleAdd}>
+            <PlusIcon className="w-4 h-4 mr-2" />
+            Add State
+          </Button>
+        </div>
       </div>
+
+      {/* State Selection Dropdown for Manual Entry */}
+      {(showAddModal || editingItem) && activeTab === 'states' && (
+        <Card className="p-4 border-2 border-blue-500/30 bg-blue-900/10">
+          <div className="flex items-center gap-3 mb-3">
+            <MapIcon className="w-5 h-5 text-blue-400" />
+            <h4 className="font-medium text-blue-400">Quick State Selection</h4>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Select from Indian States
+              </label>
+              <select
+                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:border-blue-500"
+                onChange={(e) => {
+                  const selectedState = INDIAN_STATES_DATA.find(state => state.name === e.target.value);
+                  if (selectedState) {
+                    handleFieldChange('name', selectedState.name);
+                    handleFieldChange('code', selectedState.code);
+                    handleFieldChange('population', selectedState.population.toString());
+                  }
+                }}
+                value=""
+              >
+                <option value="">Choose a state to auto-fill...</option>
+                {INDIAN_STATES_DATA.map((state) => (
+                  <option key={state.code} value={state.name}>
+                    {state.name} ({state.code}) - {state.type === 'state' ? 'State' : 'UT'}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="space-y-2 text-sm">
+              <div className="text-gray-400">
+                <strong>Quick Info:</strong>
+              </div>
+              <div className="text-gray-300">
+                • Select from dropdown to auto-fill form
+              </div>
+              <div className="text-gray-300">
+                • Includes all {INDIAN_STATES_DATA.filter(s => s.type === 'state').length} states and {INDIAN_STATES_DATA.filter(s => s.type === 'ut').length} union territories
+              </div>
+              <div className="text-gray-300">
+                • Population data included (in lakhs)
+              </div>
+            </div>
+          </div>
+        </Card>
+      )}
       
       <div className="grid grid-cols-1 gap-4">
         {data.states.map((state: any) => (

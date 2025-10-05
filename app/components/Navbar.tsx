@@ -31,12 +31,6 @@ export default function Navbar() {
               Dashboard
             </Link>
             <Link 
-              href="/admin" 
-              className="text-sm font-medium text-gray-300 hover:text-white transition-colors duration-200"
-            >
-              States
-            </Link>
-            <Link 
               href="/agencies" 
               className="text-sm font-medium text-gray-300 hover:text-white transition-colors duration-200"
             >
@@ -55,11 +49,21 @@ export default function Navbar() {
               Funds
             </Link>
             <Link 
-              href="/workflow" 
-              className="text-sm font-medium text-gray-300 hover:text-white transition-colors duration-200 bg-blue-600/20 px-3 py-1 rounded-lg"
+              href="/communications" 
+              className="text-sm font-medium text-gray-300 hover:text-white transition-colors duration-200"
             >
-              🔄 Workflow
+              Communications
             </Link>
+            
+            {/* Admin Button - Show only for admin users */}
+            {session && ['Super Admin', 'Central Admin', 'State Admin', 'Local Admin'].includes((session.user as any)?.role) && (
+              <Link 
+                href="/admin" 
+                className="text-sm font-medium text-white bg-purple-600/80 hover:bg-purple-600 px-3 py-1 rounded-lg transition-colors duration-200"
+              >
+                �️ Admin Panel
+              </Link>
+            )}
             
             <div className="flex items-center space-x-4 ml-8 pl-8 border-l border-gray-600">
               {session && (
@@ -113,13 +117,6 @@ export default function Navbar() {
                 Dashboard
               </Link>
               <Link 
-                href="/admin" 
-                className="text-sm font-medium text-gray-300 hover:text-white transition-colors duration-200"
-                onClick={() => setIsOpen(false)}
-              >
-                States
-              </Link>
-              <Link 
                 href="/agencies" 
                 className="text-sm font-medium text-gray-300 hover:text-white transition-colors duration-200"
                 onClick={() => setIsOpen(false)}
@@ -141,12 +138,23 @@ export default function Navbar() {
                 Funds
               </Link>
               <Link 
-                href="/workflow" 
+                href="/communications" 
                 className="text-sm font-medium text-gray-300 hover:text-white transition-colors duration-200"
                 onClick={() => setIsOpen(false)}
               >
-                🔄 Workflow
+                Communications
               </Link>
+              
+              {/* Admin Button - Show only for admin users */}
+              {session && ['Super Admin', 'Central Admin', 'State Admin', 'Local Admin'].includes((session.user as any)?.role) && (
+                <Link 
+                  href="/admin" 
+                  className="text-sm font-medium text-white bg-purple-600/80 hover:bg-purple-600 px-3 py-1 rounded-lg transition-colors duration-200"
+                  onClick={() => setIsOpen(false)}
+                >
+                  �️ Admin Panel
+                </Link>
+              )}
               
               <div className="pt-4 border-t border-gray-700">
                 {session ? (

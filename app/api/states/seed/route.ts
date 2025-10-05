@@ -1,47 +1,73 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '../../../../lib/db';
 import { State } from '../../../../lib/models';
+import { INDIAN_STATES_DATA } from '../../../../lib/indianStatesData';
 
 export async function POST() {
   try {
     await dbConnect();
     
-    // Check if we have any states
-    const stateCount = await State.countDocuments();
+    // Always clear existing states for fresh population
+    await State.deleteMany({});
     
-    if (stateCount === 0) {
-      // Create some basic states for testing
-      const sampleStates = [
-        { name: 'Maharashtra', code: 'MH' },
-        { name: 'Karnataka', code: 'KA' },
-        { name: 'Tamil Nadu', code: 'TN' },
-        { name: 'Gujarat', code: 'GJ' },
-        { name: 'Uttar Pradesh', code: 'UP' },
-        { name: 'West Bengal', code: 'WB' },
-        { name: 'Delhi', code: 'DL' }
-      ];
-      
-      const created = await State.insertMany(sampleStates);
-      
-      return NextResponse.json({
-        success: true,
-        message: `Created ${created.length} sample states`,
-        data: created
-      });
-    } else {
-      return NextResponse.json({
-        success: true,
-        message: `Found ${stateCount} existing states`,
-        count: stateCount
-      });
-    }
+    // Transform Indian states data to match our schema
+    const statesData = INDIAN_STATES_DATA.map(state => ({
+      name: state.name,
+      code: state.code,
+      population: state.population * 100000, // Convert from lakhs to actual number
+      type: state.type,
+      isActive: true,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }));
+    
+    // Insert all Indian states and UTs
+    const created = await State.insertMany(statesData);
+    
+    return NextResponse.json({
+      success: true,
+      message: `Successfully populated ${created.length} Indian states and union territories`,
+      data: {
+        total: created.length,
+        states: statesData.filter(s => s.type === 'state').length,
+        unionTerritories: statesData.filter(s => s.type === 'ut').length,
+        details: created
+      }
+    });
     
   } catch (error) {
     console.error('States seed error:', error);
     return NextResponse.json({
       success: false,
-      error: 'Failed to seed states',
+      error: 'Failed to auto-populate states',
       details: error instanceof Error ? error.message : 'Unknown error'
+    }, { status: 500 });
+  }
+}
+
+export async function GET() {
+  try {
+    await dbConnect();
+    
+    const stateCount = await State.countDocuments();
+    const availableStatesCount = INDIAN_STATES_DATA.length;
+    
+    return NextResponse.json({
+      success: true,
+      message: 'States seed status',
+      data: {
+        existingStates: stateCount,
+        availableStates: availableStatesCount,
+        canSeed: true,
+        statesData: INDIAN_STATES_DATA
+      }
+    });
+    
+  } catch (error) {
+    console.error('States seed status error:', error);
+    return NextResponse.json({
+      success: false,
+      error: 'Failed to get seed status'
     }, { status: 500 });
   }
 }
