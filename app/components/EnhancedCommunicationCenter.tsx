@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import {
   ChatBubbleLeftRightIcon,
   UserGroupIcon,
@@ -62,6 +64,8 @@ interface Agency {
 }
 
 export default function EnhancedCommunicationCenter() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
   const [communications, setCommunications] = useState<Communication[]>([]);
   const [agencies, setAgencies] = useState<Agency[]>([]);
   const [projects, setProjects] = useState<any[]>([]);
@@ -77,6 +81,8 @@ export default function EnhancedCommunicationCenter() {
   const [activeTab, setActiveTab] = useState<'all' | 'inbox' | 'sent' | 'urgent' | 'resolved' | 'replies'>('all');
   const [allCommunications, setAllCommunications] = useState<Communication[]>([]); // Store all communications for counting
   const [currentAgency, setCurrentAgency] = useState<string>(''); // Current user's agency ID
+  const [userRole, setUserRole] = useState<string>(''); // Current user's role
+  const [accessError, setAccessError] = useState<string>(''); // Access control errors
 
   // New message form state
   const [newMessage, setNewMessage] = useState({
@@ -108,6 +114,75 @@ export default function EnhancedCommunicationCenter() {
   useEffect(() => {
     fetchData();
   }, []);
+
+  // Session and role verification
+  useEffect(() => {
+    if (status === 'loading') return;
+    
+    if (!session) {
+      setAccessError('Please login to access communications');
+      router.push('/login');
+      return;
+    }
+
+    const role = (session.user as any)?.role || 'Viewer';
+    setUserRole(role);
+    
+    // Set appropriate access controls based on role
+    if (role === 'Viewer') {
+      setAccessError('You have read-only access to communications');
+    }
+  }, [session, status, router]);
+
+  // Authority checking functions
+  const canResolveMessage = (communication: Communication): boolean => {
+    if (!session || userRole === 'Viewer') return false;
+    
+    // Super Admin can resolve any message
+    if (userRole === 'Super Admin') return true;
+    
+    // Central Admin can resolve messages for any agency
+    if (userRole === 'Agency Admin' && (session.user as any)?.email?.includes('central')) return true;
+    
+    // State Admin can resolve messages within their state
+    if (userRole === 'State Admin') {
+      const userStateAccess = (session.user as any)?.stateAccess || [];
+      return userStateAccess.includes(communication.toAgency.state);
+    }
+    
+    // Agency Admin can resolve messages for their agency
+    if (userRole === 'Agency Admin') {
+      return communication.toAgency._id === currentAgency;
+    }
+    
+    return false;
+  };
+
+  const canCreateMessage = (): boolean => {
+    return !!session && userRole !== 'Viewer';
+  };
+
+  const canEditMessage = (communication: Communication): boolean => {
+    if (!session || userRole === 'Viewer') return false;
+    
+    // Super Admin can edit any message
+    if (userRole === 'Super Admin') return true;
+    
+    // Users can only edit their own messages that haven't been resolved
+    return communication.fromAgency._id === currentAgency && communication.status !== 'Resolved';
+  };
+
+  const showAccessError = (action: string) => {
+    const errorMessages = {
+      'resolve': `Access Denied: Only ${userRole === 'Viewer' ? 'authorized users' : 'message recipients or higher authorities'} can resolve messages`,
+      'create': 'Access Denied: Viewers cannot create messages',
+      'edit': 'Access Denied: You can only edit your own unresolved messages',
+      'reply': 'Access Denied: Viewers cannot reply to messages'
+    };
+    
+    setAccessError(errorMessages[action as keyof typeof errorMessages] || 'Access Denied');
+    setTimeout(() => setAccessError(''), 5000);
+  };
 
   useEffect(() => {
     if (currentAgency) {
@@ -383,12 +458,20 @@ export default function EnhancedCommunicationCenter() {
   const handleMarkAsResolved = async () => {
     if (!selectedCommunication) return;
 
+    // Check if user has authority to resolve this message
+    if (!canResolveMessage(selectedCommunication)) {
+      showAccessError('resolve');
+      return;
+    }
+
     try {
       const response = await fetch(`/api/communications/${selectedCommunication._id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          status: 'Resolved'
+          status: 'Resolved',
+          resolvedBy: session?.user?.email,
+          resolvedAt: new Date().toISOString()
         })
       });
 
@@ -398,14 +481,18 @@ export default function EnhancedCommunicationCenter() {
         
         // Refresh current tab to remove the resolved message
         fetchCommunications();
+        fetchAllCommunications();
         
-        // Optional: Show a notification that the message was moved to resolved tab
-        // You could add a toast notification here if desired
-        
-        // The message will now only appear in the "Resolved" tab
+        // Show success message
+        setAccessError('✅ Message resolved successfully');
+        setTimeout(() => setAccessError(''), 3000);
+      } else {
+        throw new Error('Failed to resolve message');
       }
     } catch (error) {
       console.error('Failed to mark as resolved:', error);
+      setAccessError('❌ Failed to resolve message. Please try again.');
+      setTimeout(() => setAccessError(''), 5000);
     }
   };
 
@@ -540,6 +627,24 @@ export default function EnhancedCommunicationCenter() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
+      {/* Access Error Display */}
+      {accessError && (
+        <div className={`mx-4 mt-4 p-4 rounded-lg border ${
+          accessError.includes('✅') 
+            ? 'bg-green-900/50 border-green-500 text-green-200' 
+            : accessError.includes('❌') 
+            ? 'bg-red-900/50 border-red-500 text-red-200'
+            : 'bg-yellow-900/50 border-yellow-500 text-yellow-200'
+        }`}>
+          <div className="flex items-center">
+            {accessError.includes('✅') && <span className="mr-2">✅</span>}
+            {accessError.includes('❌') && <span className="mr-2">❌</span>}
+            {!accessError.includes('✅') && !accessError.includes('❌') && <span className="mr-2">⚠️</span>}
+            <span className="font-medium">{accessError}</span>
+          </div>
+        </div>
+      )}
+      
       {/* Header */}
       <header className="bg-white/10 backdrop-blur-md shadow-lg border-b border-white/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -553,8 +658,18 @@ export default function EnhancedCommunicationCenter() {
             </div>
             <div className="flex items-center gap-4">
               <Button
-                onClick={() => setShowNewMessageModal(true)}
-                className="bg-blue-600 hover:bg-blue-700 text-white"
+                onClick={() => {
+                  if (canCreateMessage()) {
+                    setShowNewMessageModal(true);
+                  } else {
+                    showAccessError('create');
+                  }
+                }}
+                className={`${canCreateMessage() 
+                  ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+                  : 'bg-gray-600 text-gray-400 cursor-not-allowed'
+                }`}
+                disabled={!canCreateMessage()}
               >
                 <PaperAirplaneIcon className="w-5 h-5 mr-2" />
                 New Message
@@ -1154,13 +1269,26 @@ export default function EnhancedCommunicationCenter() {
                     className={`flex items-center gap-2 ${
                       selectedCommunication.status === 'Resolved' 
                         ? 'bg-green-500/20 border-green-500/50 text-green-300' 
-                        : ''
+                        : canResolveMessage(selectedCommunication)
+                        ? 'border-green-500/50 text-green-300 hover:bg-green-500/20'
+                        : 'border-gray-500/50 text-gray-400 cursor-not-allowed'
                     }`}
-                    onClick={handleMarkAsResolved}
-                    disabled={selectedCommunication.status === 'Resolved'}
+                    onClick={() => {
+                      if (canResolveMessage(selectedCommunication)) {
+                        handleMarkAsResolved();
+                      } else {
+                        showAccessError('resolve');
+                      }
+                    }}
+                    disabled={selectedCommunication.status === 'Resolved' || !canResolveMessage(selectedCommunication)}
                   >
                     <CheckCircleIcon className="w-4 h-4" />
-                    {selectedCommunication.status === 'Resolved' ? 'Resolved ✓' : 'Mark as Resolved'}
+                    {selectedCommunication.status === 'Resolved' 
+                      ? 'Resolved ✓' 
+                      : canResolveMessage(selectedCommunication)
+                      ? 'Mark as Resolved'
+                      : '🔒 No Authority'
+                    }
                   </Button>
                 </div>
               </div>

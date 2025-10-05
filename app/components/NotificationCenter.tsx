@@ -58,6 +58,11 @@ export default function NotificationCenter({ agencyId }: NotificationCenterProps
     try {
       setLoading(true);
       const response = await fetch(`/api/communications?toAgency=${agencyId}&limit=20`);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
       const data = await response.json();
       
       if (data.success) {
@@ -67,6 +72,9 @@ export default function NotificationCenter({ agencyId }: NotificationCenterProps
       }
     } catch (error) {
       console.error('Error fetching notifications:', error);
+      // Set empty notifications on error to prevent UI issues
+      setNotifications([]);
+      setUnreadCount(0);
     } finally {
       setLoading(false);
     }
